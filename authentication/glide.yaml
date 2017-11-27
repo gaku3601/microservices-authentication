@@ -1,0 +1,12 @@
+package: github.com/gaku3601/study-microservices/authentication
+import:
+- package: github.com/gorilla/mux.git
+  version: ^1.6.0
+- package: github.com/dgrijalva/jwt-go
+  version: ^3.1.0
+- package: github.com/spf13/viper.git
+  version: ^1.0.0
+- package: github.com/lib/pq
+- package: golang.org/x/crypto
+  subpackages:
+  - bcrypt

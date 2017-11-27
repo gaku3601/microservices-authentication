@@ -1,0 +1,7 @@
+TokenKeyServerURL = "http://kong:8001/consumers/gaku/jwt"
+[database]
+user = "postgres"
+host = "auth-db"
+dbname = "auth_db"
+port = "5432"
+sslmode = "disable"
