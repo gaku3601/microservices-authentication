@@ -1,17 +1,41 @@
 package main
 
 import (
+	"bytes"
+	"io/ioutil"
+	"net/http"
+	"net/http/httptest"
 	"testing"
-
-	viper "github.com/spf13/viper.git"
 )
 
-func TestReadConfig(t *testing.T) {
-	readConfig("./config")
-	//config読み取り
-	user := viper.GetString("database.user")
-	if user != "" {
-	} else {
-		t.Errorf("config読み取りエラー:configが読み込めません")
-	}
+func TestLogin(t *testing.T) {
+	//パラメータの取得テスト
+	stub := http.HandlerFunc(login)
+	ts := httptest.NewServer(stub)
+	defer ts.Close()
+
+	jsonStr := `{"email":"test","password":"aaaa"}`
+
+	req, _ := http.NewRequest(
+		"POST",
+		ts.URL,
+		bytes.NewBuffer([]byte(jsonStr)),
+	)
+
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, _ := client.Do(req)
+	defer resp.Body.Close()
+
+	body, _ := ioutil.ReadAll(resp.Body)
+	t.Log(string(body))
+	t.Error(string(body))
+
+	/*
+		if data.(map[string]interface{})["email"] != nil {
+		} else {
+			t.Error("emailの取得エラー")
+		}
+	*/
 }

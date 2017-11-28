@@ -3,19 +3,15 @@ package dbc
 import (
 	"database/sql"
 	"testing"
-
-	"github.com/gaku3601/study-microservices/authentication/config"
 )
 
 func TestDBConnect(t *testing.T) {
-	config.SetConfig("../config")
-	//DB接続テスト
-	DBConnect(func(db *sql.DB) {
-		err := db.Ping()
-		if err == nil {
-		} else {
-			t.Log(err)
-			t.Errorf("DB接続エラーです。config周りの設定がおかしいかもです。")
-		}
-	})
+	//DB接続テスト(設定を読み込んでいないので失敗する。)
+	err := DBConnect(func(db *sql.DB) {})
+
+	if err != nil {
+	} else {
+		t.Log(err)
+		t.Errorf("DBに接続できない際のエラーが正しく設定されていません。")
+	}
 }
