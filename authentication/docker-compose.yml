@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+    auth-db: 
+        image: gaku3601/ja-postgresql:9.6.5 
+        ports:
+            - 5432:5432
+        environment:
+            - "POSTGRES_DB=auth_db"

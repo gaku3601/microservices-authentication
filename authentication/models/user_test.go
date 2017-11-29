@@ -1,6 +1,7 @@
 package models
 
 import (
+	"database/sql"
 	"testing"
 )
 
@@ -29,4 +30,13 @@ func TestFetchUserCheck(t *testing.T) {
 	} else {
 		t.Error("正常にハッシュ化されていません。")
 	}
+
+	//DB接続を行う
+	user.dbConnect(func(db *sql.DB) {
+		err := db.Ping()
+		if err == nil {
+		} else {
+			t.Error("DB接続エラー")
+		}
+	})
 }
