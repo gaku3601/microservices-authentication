@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"database/sql"
 	"encoding/hex"
+	"errors"
 
 	_ "github.com/lib/pq"
 )
@@ -24,6 +25,15 @@ func (u *user) md5hash(password string) string {
 	hasher := md5.New()
 	hasher.Write([]byte(password))
 	return hex.EncodeToString(hasher.Sum(nil))
+}
+
+func (u *user) fetchUser() (int, error) {
+	var id = 0
+	var err = errors.New("")
+	u.dbConnect(func(db *sql.DB) {
+		err = db.QueryRow("SELECT ID FROM USERS WHERE EMAIL = $1 AND PASSWORD = $2;", u.email, u.md5hash(u.password)).Scan(&id)
+	})
+	return id, err
 }
 
 func (u *user) dbConnect(fn func(db *sql.DB)) {
