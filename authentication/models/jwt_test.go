@@ -16,7 +16,6 @@ func TestNewJwt(t *testing.T) {
 	}
 }
 
-//JwtKeyを取得する
 func TestFetchJwtKey(t *testing.T) {
 	ts := jwtServerStub()
 	defer ts.Close()
@@ -27,6 +26,17 @@ func TestFetchJwtKey(t *testing.T) {
 	if jwt.Key != "RmzcPktBjNbnsGdZPwLioOmdThCjFGIO" {
 		t.Log(jwt)
 		t.Error("JwtKey取得エラー")
+	}
+}
+
+func TestCreateToken(t *testing.T) {
+	ts := jwtServerStub()
+	defer ts.Close()
+
+	jwt := NewJwt(ts.URL)
+	token := jwt.createToken()
+	if token != "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc5MDUxZjdmLWZmMjQtNGQ2OS04ZTFkLWQ4MzE0NmJjOWVjNyIsImlzcyI6IlJtemNQa3RCak5ibnNHZFpQd0xpb09tZFRoQ2pGR0lPIn0.yqJ9JqN3YNIO1Vx2kuYvCyXBjZSQ5VpYrRZhNoNNTnk" {
+		t.Error("token生成エラー")
 	}
 }
 

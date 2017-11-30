@@ -3,6 +3,8 @@ package models
 import (
 	"encoding/json"
 	"net/http"
+
+	jwtgo "github.com/dgrijalva/jwt-go"
 )
 
 type Jwt struct {
@@ -33,4 +35,14 @@ func (j *Jwt) fetchJwtKey(url string) {
 	defer resp.Body.Close()
 
 	json.NewDecoder(resp.Body).Decode(j)
+}
+
+func (j *Jwt) createToken() string {
+	tokendata := jwtgo.NewWithClaims(jwtgo.SigningMethodHS256, jwtgo.MapClaims{
+		"id":  j.Id,
+		"iss": j.Key,
+	})
+	token, _ := tokendata.SignedString([]byte(j.Secret))
+
+	return token
 }
