@@ -14,8 +14,9 @@ type Jwt struct {
 	Consumer_id string `json:"consumer_id"`
 }
 
-func NewJwt() *Jwt {
+func NewJwt(url string) *Jwt {
 	j := new(Jwt)
+	j.fetchJwtKey(url)
 	return j
 }
 

@@ -8,8 +8,10 @@ import (
 )
 
 func TestNewJwt(t *testing.T) {
-	jwt := NewJwt()
-	if jwt == nil {
+	ts := jwtServerStub()
+	defer ts.Close()
+	jwt := NewJwt(ts.URL)
+	if jwt.Created_at != 1510615420000 {
 		t.Error("jwtモデルの生成エラー")
 	}
 }
@@ -19,7 +21,7 @@ func TestFetchJwtKey(t *testing.T) {
 	ts := jwtServerStub()
 	defer ts.Close()
 
-	jwt := NewJwt()
+	jwt := new(Jwt)
 	jwt.fetchJwtKey(ts.URL)
 
 	if jwt.Key != "RmzcPktBjNbnsGdZPwLioOmdThCjFGIO" {
