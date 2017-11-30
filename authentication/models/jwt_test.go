@@ -40,6 +40,20 @@ func TestCreateToken(t *testing.T) {
 	}
 }
 
+func TestDecryptionToken(t *testing.T) {
+	ts := jwtServerStub()
+	defer ts.Close()
+
+	jwt := NewJwt(ts.URL)
+	token := jwt.createToken()
+
+	data := decryptionToken(token)
+
+	if (*data)["id"] != "79051f7f-ff24-4d69-8e1d-d83146bc9ec7" {
+		t.Error("jwtデコードエラー")
+	}
+}
+
 func jwtServerStub() *httptest.Server {
 	//jwt key発行用Stub(kongで出力想定)
 	tokenKeyStub := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

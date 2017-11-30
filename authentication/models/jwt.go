@@ -46,3 +46,9 @@ func (j *Jwt) createToken() string {
 
 	return token
 }
+
+func decryptionToken(token string) *jwtgo.MapClaims {
+	p, _ := jwtgo.Parse(token, nil)
+	data := p.Claims.(jwtgo.MapClaims)
+	return &data
+}
