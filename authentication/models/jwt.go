@@ -37,11 +37,16 @@ func (j *Jwt) fetchJwtKey(url string) {
 	json.NewDecoder(resp.Body).Decode(j)
 }
 
-func (j *Jwt) createToken() string {
-	tokendata := jwtgo.NewWithClaims(jwtgo.SigningMethodHS256, jwtgo.MapClaims{
-		"id":  j.Id,
-		"iss": j.Key,
-	})
+type Claims map[string]interface{}
+
+func (c Claims) Valid() error {
+	return nil
+}
+
+func (j *Jwt) createToken(claims Claims) string {
+	//issはkong認証で必ず必要であるため、必須で追加する
+	claims["iss"] = j.Key
+	tokendata := jwtgo.NewWithClaims(jwtgo.SigningMethodHS256, claims)
 	token, _ := tokendata.SignedString([]byte(j.Secret))
 
 	return token

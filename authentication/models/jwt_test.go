@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -34,8 +36,12 @@ func TestCreateToken(t *testing.T) {
 	defer ts.Close()
 
 	jwt := NewJwt(ts.URL)
-	token := jwt.createToken()
-	if token != "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc5MDUxZjdmLWZmMjQtNGQ2OS04ZTFkLWQ4MzE0NmJjOWVjNyIsImlzcyI6IlJtemNQa3RCak5ibnNHZFpQd0xpb09tZFRoQ2pGR0lPIn0.yqJ9JqN3YNIO1Vx2kuYvCyXBjZSQ5VpYrRZhNoNNTnk" {
+
+	token := jwt.createToken(claimsTestData())
+	t.Log(token)
+	//jwtの場合、確実にドットが二つ入っているはずなので、それを利用しテストする。
+	arr := strings.Split(token, ".")
+	if len(arr) != 3 {
 		t.Error("token生成エラー")
 	}
 }
@@ -45,12 +51,33 @@ func TestDecryptionToken(t *testing.T) {
 	defer ts.Close()
 
 	jwt := NewJwt(ts.URL)
-	token := jwt.createToken()
+	token := jwt.createToken(claimsTestData())
 
 	data := decryptionToken(token)
 
-	if (*data)["id"] != "79051f7f-ff24-4d69-8e1d-d83146bc9ec7" {
+	t.Log((*data)["id"])
+	t.Log(reflect.TypeOf((*data)["id"]))
+	if (*data)["id"] != float64(1) {
 		t.Error("jwtデコードエラー")
+	}
+	if (*data)["name"] != "gaku" {
+		t.Error("jwtデコードエラー")
+	}
+}
+
+func TestValid(t *testing.T) {
+	//Valid() errorはjwt-goのClaimsインターフェースを利用するために作成したもの。
+	//そのため、何もせず、nilを返却する。
+	claims := new(Claims)
+	if claims.Valid() != nil {
+		t.Error("Valid()エラー")
+	}
+}
+
+func claimsTestData() Claims {
+	return Claims{
+		"id":   1,
+		"name": "gaku",
 	}
 }
 
