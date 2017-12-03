@@ -19,3 +19,9 @@ passwordはdb上にハッシュ化されている。
 	- jwtkeyを取得する。
 	- jwtトークンを作成する。
 		- jwtトークンにはUserIDを格納する。
+
+# サインアップ仕様
+emailとpasswordをjsonでusers/signupに送信した場合、DB上に格納する。  
+ただし、passwordはmd5でハッシュ化し格納する。  
+また、emailがすでにDB上に格納されている場合errorを返却する。  
+格納に成功した場合、status:okを返却する。  
