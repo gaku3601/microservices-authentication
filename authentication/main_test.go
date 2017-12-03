@@ -25,6 +25,12 @@ func TestLogin(t *testing.T) {
 		t.Error("loginエラー")
 	}
 
+	errordata := errorLoginRequest(ts.URL).(map[string]interface{})
+	t.Log(errordata)
+	if errordata["token"] != "" {
+		t.Error("loginエラー")
+	}
+
 	models.Teardown()
 }
 
@@ -52,6 +58,28 @@ func TestReceptionData(t *testing.T) {
 //ログインリクエストを投げ、帰ってきたデータをintefaceで返却する。
 func loginRequest(url string) interface{} {
 	jsonStr := `{"email":"pro.gaku@gmail.com","password":"password"}`
+
+	req, _ := http.NewRequest(
+		"POST",
+		url,
+		bytes.NewBuffer([]byte(jsonStr)),
+	)
+
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, _ := client.Do(req)
+	defer resp.Body.Close()
+
+	body, _ := ioutil.ReadAll(resp.Body)
+	var data interface{}
+	json.Unmarshal(body, &data)
+
+	return data
+}
+
+func errorLoginRequest(url string) interface{} {
+	jsonStr := `{"email":"pro.gaku@gmail.com2","password":"password"}`
 
 	req, _ := http.NewRequest(
 		"POST",

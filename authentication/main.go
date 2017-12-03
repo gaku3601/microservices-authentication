@@ -28,6 +28,13 @@ func login(w http.ResponseWriter, r *http.Request) {
 	user := models.NewUser(data["email"].(string), data["password"].(string))
 	id, _ := user.FetchUser()
 
+	if id == 0 {
+		//送信処理
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprint(w, `{"token":""}`)
+		return
+	}
+
 	jwt := models.NewJwt("http://localhost:8001/consumers/gaku/jwt")
 	token := jwt.CreateToken(models.Claims{
 		"id": id,
