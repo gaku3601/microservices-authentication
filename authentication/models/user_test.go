@@ -44,34 +44,19 @@ func TestDBConnect(t *testing.T) {
 }
 
 func TestFetchUser(t *testing.T) {
-	setup()
+	Setup()
 	//DBからUser情報を取得する。
 	user := NewUser("pro.gaku@gmail.com", "password")
-	userID, err := user.fetchUser()
+	userID, err := user.FetchUser()
 	if userID != 1 {
 		t.Errorf("DBよりUserを取得する際に不具合があります。:%s", err)
 	}
 
 	user = NewUser("pro.gaku@gmail.com2", "password")
-	userID, err = user.fetchUser()
+	userID, err = user.FetchUser()
 	if err == nil {
 		t.Errorf("FetchUser()でエラーを返却できていません。%s", err)
 	}
 
-	teardown()
-}
-
-func setup() {
-	//userを作成
-	user := NewUser("pro.gaku@gmail.com", "password")
-	user.dbConnect(func(db *sql.DB) {
-		db.Exec("INSERT INTO Users(id, email, password) VALUES(1, $1, $2);", user.email, user.md5hash(user.password))
-	})
-}
-
-func teardown() {
-	user := NewUser("", "")
-	user.dbConnect(func(db *sql.DB) {
-		db.Exec("DELETE FROM USERS;")
-	})
+	Teardown()
 }

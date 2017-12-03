@@ -27,7 +27,7 @@ func (u *user) md5hash(password string) string {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
-func (u *user) fetchUser() (int, error) {
+func (u *user) FetchUser() (int, error) {
 	var id = 0
 	var err = errors.New("")
 	u.dbConnect(func(db *sql.DB) {

@@ -7,20 +7,24 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/gaku3601/microservices-authentication/authentication/models"
 )
 
 //ログインテスト
 func TestLogin(t *testing.T) {
+	models.Setup()
 	//パラメータの取得テスト
 	stub := http.HandlerFunc(login)
 	ts := httptest.NewServer(stub)
 	defer ts.Close()
 
-	t.Log(loginRequest(ts.URL))
 	data := loginRequest(ts.URL).(map[string]interface{})
-	if data["email"] != "pro.gaku@gmail.com" {
+	t.Log(data)
+	if data["id"] != float64(1) {
 		t.Error("loginエラー")
 	}
+	models.Teardown()
 }
 
 //json受け取りを実施し、正常にmap[string]interface{}で格納されるかテスト
@@ -29,7 +33,7 @@ func TestReceptionData(t *testing.T) {
 	ts := httptest.NewServer(stub)
 	defer ts.Close()
 
-	jsonStr := `{"email":"pro.gaku@gmail.com","password":"test"}`
+	jsonStr := `{"email":"pro.gaku@gmail.com","password":"password"}`
 
 	req, _ := http.NewRequest(
 		"POST",
@@ -46,7 +50,7 @@ func TestReceptionData(t *testing.T) {
 
 //ログインリクエストを投げ、帰ってきたデータをintefaceで返却する。
 func loginRequest(url string) interface{} {
-	jsonStr := `{"email":"pro.gaku@gmail.com","password":"test"}`
+	jsonStr := `{"email":"pro.gaku@gmail.com","password":"password"}`
 
 	req, _ := http.NewRequest(
 		"POST",

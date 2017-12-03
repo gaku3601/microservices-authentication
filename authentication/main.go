@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/gaku3601/microservices-authentication/authentication/models"
 	"github.com/gaku3601/study-microservices/authentication/config"
 	_ "github.com/lib/pq"
 
@@ -23,11 +24,13 @@ func main() {
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
-	data2 := receptionData(r)
+	data := receptionData(r)
+	user := models.NewUser(data["email"].(string), data["password"].(string))
+	id, _ := user.FetchUser()
 
 	//送信処理
 	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintf(w, `{"email":"%s"}`, data2["email"])
+	fmt.Fprintf(w, `{"id":%d}`, id)
 }
 
 func signup(w http.ResponseWriter, r *http.Request) {
