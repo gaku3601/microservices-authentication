@@ -46,6 +46,16 @@ func login(w http.ResponseWriter, r *http.Request) {
 }
 
 func signup(w http.ResponseWriter, r *http.Request) {
+	data := receptionData(r)
+	user := models.NewUser(data["email"].(string), data["password"].(string))
+	err := user.InsertUser()
+	w.Header().Set("Content-Type", "application/json")
+	if err != nil {
+		fmt.Fprint(w, `{"status":"error"}`)
+		return
+	}
+
+	fmt.Fprint(w, `{"status":"ok"}`)
 }
 
 //受信データ受け取り処理

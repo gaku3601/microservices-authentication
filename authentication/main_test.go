@@ -34,6 +34,28 @@ func TestLogin(t *testing.T) {
 	models.Teardown()
 }
 
+func TestSignup(t *testing.T) {
+	//パラメータの取得テスト
+	stub := http.HandlerFunc(signup)
+	ts := httptest.NewServer(stub)
+	defer ts.Close()
+
+	data := signupRequest(ts.URL).(map[string]interface{})
+
+	if data["status"] != "ok" {
+		t.Error("signup登録エラー")
+	}
+
+	//重複パターン
+	data = signupRequest(ts.URL).(map[string]interface{})
+
+	if data["status"] != "error" {
+		t.Error("エラー時チェック")
+	}
+
+	models.Teardown()
+}
+
 //json受け取りを実施し、正常にmap[string]interface{}で格納されるかテスト
 func TestReceptionData(t *testing.T) {
 	stub := http.HandlerFunc(login)
@@ -53,6 +75,28 @@ func TestReceptionData(t *testing.T) {
 	if data["email"] != "pro.gaku@gmail.com" {
 		t.Error("request受け取りエラー")
 	}
+}
+
+func signupRequest(url string) interface{} {
+	jsonStr := `{"email":"pro.gaku@gmail.com","password":"password"}`
+
+	req, _ := http.NewRequest(
+		"POST",
+		url,
+		bytes.NewBuffer([]byte(jsonStr)),
+	)
+
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, _ := client.Do(req)
+	defer resp.Body.Close()
+
+	body, _ := ioutil.ReadAll(resp.Body)
+	var data interface{}
+	json.Unmarshal(body, &data)
+
+	return data
 }
 
 //ログインリクエストを投げ、帰ってきたデータをintefaceで返却する。
