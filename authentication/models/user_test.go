@@ -19,6 +19,30 @@ func TestNewUser(t *testing.T) {
 
 }
 
+func TestInsertUser(t *testing.T) {
+	//insert処理
+	user := NewUser("pro.gaku@gmail.com", "passpass")
+	user.InsertUser()
+	//fetch処理
+	email, password := fetchUser(user)
+	if email != "pro.gaku@gmail.com" {
+		t.Error("ユーザ登録エラー:email")
+	}
+	if password != user.md5hash("passpass") {
+		t.Error("ユーザ登録エラー:password")
+	}
+
+	//emailが重複し、登録する場合エラーを返却する。
+	err := user.InsertUser()
+	t.Log(err)
+
+	if err.Error() != "email重複エラー" {
+		t.Error("email重複エラーチェック")
+	}
+
+	Teardown()
+}
+
 func TestMD5hash(t *testing.T) {
 	//passwordをハッシュ化する
 	user := NewUser("pro.gaku@gmail.com", "password")
@@ -59,4 +83,13 @@ func TestFetchUser(t *testing.T) {
 	}
 
 	Teardown()
+}
+
+func fetchUser(u *user) (string, string) {
+	email := ""
+	password := ""
+	u.dbConnect(func(db *sql.DB) {
+		db.QueryRow("SELECT EMAIL,PASSWORD FROM USERS WHERE EMAIL = $1 AND PASSWORD = $2;", u.email, u.md5hash(u.password)).Scan(&email, &password)
+	})
+	return email, password
 }

@@ -27,6 +27,20 @@ func (u *user) md5hash(password string) string {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
+func (u *user) InsertUser() error {
+	var err = errors.New("")
+	u.dbConnect(func(db *sql.DB) {
+		_, err = db.Exec("INSERT INTO Users(email, password) VALUES($1, $2);", u.email, u.md5hash(u.password))
+	})
+	if err != nil {
+		if err.Error() == `pq: 重複キーが一意性制約"users_email_key"に違反しています` {
+			return errors.New("email重複エラー")
+		}
+	}
+
+	return err
+}
+
 func (u *user) FetchUser() (int, error) {
 	var id = 0
 	var err = errors.New("")
