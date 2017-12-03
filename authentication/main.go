@@ -1,6 +1,9 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/gaku3601/study-microservices/authentication/config"
@@ -20,10 +23,22 @@ func main() {
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
-	http.Error(w, "エラー", 1)
+	data2 := receptionData(r)
+
+	//送信処理
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprintf(w, `{"email":"%s"}`, data2["email"])
 }
 
 func signup(w http.ResponseWriter, r *http.Request) {
+}
+
+//受信データ受け取り処理
+func receptionData(r *http.Request) map[string]interface{} {
+	body, _ := ioutil.ReadAll(r.Body)
+	var data interface{}
+	json.Unmarshal(body, &data)
+	return data.(map[string]interface{})
 }
 
 func readConfig(path string) {
