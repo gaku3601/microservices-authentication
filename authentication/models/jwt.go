@@ -43,7 +43,7 @@ func (c Claims) Valid() error {
 	return nil
 }
 
-func (j *Jwt) createToken(claims Claims) string {
+func (j *Jwt) CreateToken(claims Claims) string {
 	//issはkong認証で必ず必要であるため、必須で追加する
 	claims["iss"] = j.Key
 	tokendata := jwtgo.NewWithClaims(jwtgo.SigningMethodHS256, claims)
@@ -52,7 +52,7 @@ func (j *Jwt) createToken(claims Claims) string {
 	return token
 }
 
-func decryptionToken(token string) *jwtgo.MapClaims {
+func DecryptionToken(token string) *jwtgo.MapClaims {
 	p, _ := jwtgo.Parse(token, nil)
 	data := p.Claims.(jwtgo.MapClaims)
 	return &data

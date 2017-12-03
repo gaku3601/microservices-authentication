@@ -37,7 +37,7 @@ func TestCreateToken(t *testing.T) {
 
 	jwt := NewJwt(ts.URL)
 
-	token := jwt.createToken(claimsTestData())
+	token := jwt.CreateToken(claimsTestData())
 	t.Log(token)
 	//jwtの場合、確実にドットが二つ入っているはずなので、それを利用しテストする。
 	arr := strings.Split(token, ".")
@@ -51,9 +51,9 @@ func TestDecryptionToken(t *testing.T) {
 	defer ts.Close()
 
 	jwt := NewJwt(ts.URL)
-	token := jwt.createToken(claimsTestData())
+	token := jwt.CreateToken(claimsTestData())
 
-	data := decryptionToken(token)
+	data := DecryptionToken(token)
 
 	t.Log((*data)["id"])
 	t.Log(reflect.TypeOf((*data)["id"]))

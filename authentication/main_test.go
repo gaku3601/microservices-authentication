@@ -20,10 +20,11 @@ func TestLogin(t *testing.T) {
 	defer ts.Close()
 
 	data := loginRequest(ts.URL).(map[string]interface{})
-	t.Log(data)
-	if data["id"] != float64(1) {
+	claims := models.DecryptionToken(data["token"].(string))
+	if (*claims)["id"] != float64(1) {
 		t.Error("loginエラー")
 	}
+
 	models.Teardown()
 }
 
