@@ -21,12 +21,6 @@ func NewUser(email string, password string) *user {
 	return &user{email: email, password: password}
 }
 
-func (u *user) md5hash(password string) string {
-	hasher := md5.New()
-	hasher.Write([]byte(password))
-	return hex.EncodeToString(hasher.Sum(nil))
-}
-
 func (u *user) InsertUser() error {
 	var err = errors.New("")
 	u.dbConnect(func(db *sql.DB) {
@@ -48,6 +42,12 @@ func (u *user) FetchUser() (int, error) {
 		err = db.QueryRow("SELECT ID FROM USERS WHERE EMAIL = $1 AND PASSWORD = $2;", u.email, u.md5hash(u.password)).Scan(&id)
 	})
 	return id, err
+}
+
+func (u *user) md5hash(password string) string {
+	hasher := md5.New()
+	hasher.Write([]byte(password))
+	return hex.EncodeToString(hasher.Sum(nil))
 }
 
 func (u *user) dbConnect(fn func(db *sql.DB)) {
