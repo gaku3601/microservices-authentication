@@ -29,7 +29,6 @@ func login(w http.ResponseWriter, r *http.Request) {
 	id, _ := user.FetchUser()
 
 	if id == 0 {
-		//送信処理
 		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprint(w, `{"token":""}`)
 		return
@@ -40,7 +39,6 @@ func login(w http.ResponseWriter, r *http.Request) {
 		"id": id,
 	})
 
-	//送信処理
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Fprintf(w, `{"token":"%s"}`, token)
 }

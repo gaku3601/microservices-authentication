@@ -13,6 +13,7 @@ import (
 
 //ログインテスト
 func TestLogin(t *testing.T) {
+	models.Teardown()
 	models.Setup()
 	//パラメータの取得テスト
 	stub := http.HandlerFunc(login)
@@ -31,10 +32,10 @@ func TestLogin(t *testing.T) {
 		t.Error("loginエラー")
 	}
 
-	models.Teardown()
 }
 
 func TestSignup(t *testing.T) {
+	models.Teardown()
 	//パラメータの取得テスト
 	stub := http.HandlerFunc(signup)
 	ts := httptest.NewServer(stub)
@@ -53,7 +54,6 @@ func TestSignup(t *testing.T) {
 		t.Error("エラー時チェック")
 	}
 
-	models.Teardown()
 }
 
 //json受け取りを実施し、正常にmap[string]interface{}で格納されるかテスト

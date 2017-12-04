@@ -20,11 +20,13 @@ func TestNewUser(t *testing.T) {
 }
 
 func TestInsertUser(t *testing.T) {
+	Teardown()
 	//insert処理
 	user := NewUser("pro.gaku@gmail.com", "passpass")
 	user.InsertUser()
 	//fetch処理
 	email, password := fetchUser(user)
+	t.Log(email)
 	if email != "pro.gaku@gmail.com" {
 		t.Error("ユーザ登録エラー:email")
 	}
@@ -39,8 +41,6 @@ func TestInsertUser(t *testing.T) {
 	if err.Error() != "email重複エラー" {
 		t.Error("email重複エラーチェック")
 	}
-
-	Teardown()
 }
 
 func TestMD5hash(t *testing.T) {
@@ -68,6 +68,7 @@ func TestDBConnect(t *testing.T) {
 }
 
 func TestFetchUser(t *testing.T) {
+	Teardown()
 	Setup()
 	//DBからUser情報を取得する。
 	user := NewUser("pro.gaku@gmail.com", "password")
@@ -81,8 +82,6 @@ func TestFetchUser(t *testing.T) {
 	if err == nil {
 		t.Errorf("FetchUser()でエラーを返却できていません。%s", err)
 	}
-
-	Teardown()
 }
 
 func fetchUser(u *user) (string, string) {
